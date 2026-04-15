@@ -77,6 +77,7 @@ class MobileApiController extends Controller
                 'phone' => $data['phone'],
                 'email' => $data['email'],
                 'image' => $imageName,
+                'club_id' => 1,
             ]);
 
             // ✅ Auto login + JWT
