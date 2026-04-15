@@ -86,7 +86,7 @@ class MobileApiController extends Controller
                 'club_id' => 1,
             ]);
 
-            // ✅ Auto login + JWT
+        
             $token = Auth::guard('api_users')->login($user);
 
             DB::commit();
@@ -137,6 +137,25 @@ class MobileApiController extends Controller
             'status' => true,
             'message' => 'تم تسجيل الدخول بنجاح',
             'token' => $token,
+        ]);
+    }
+
+    public function user_profile_completion()
+    {
+        $data = auth()->guard('api_users')->user();
+        $data->transform(function ($data) {
+             return [
+           
+                'profile_completion'=> $data->profile_completion,
+                'missing_fields'=> $data->missing_fields,
+             ];
+               
+              
+        });
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
         ]);
     }
    

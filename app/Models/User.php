@@ -13,7 +13,8 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory, Notifiable,SoftDeletes;
 
     protected $guarded = [];
-    protected $appends = ['image_url','country_name','governorate_name','area_name','gender_name','club_name'];
+    protected $appends = ['image_url','country_name','governorate_name','area_name','gender_name','club_name','profile_completion',
+    'missing_fields'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -102,6 +103,52 @@ class User extends Authenticatable implements JWTSubject
     public function getClubNameAttribute()
     {
         return $this->club ? $this->club->name_ar : null;
+    }
+
+    public function getProfileCompletionAttribute()
+    {
+        $fields = [
+            'first_name',
+            'last_name',
+            'phone',
+            'email',
+            'image',
+            'birthdate',
+            'gender_id',
+            'country_id',
+            'governorate_id',
+            'area_id',
+        ];
+
+        $filled = 0;
+
+        foreach ($fields as $field) {
+            if (!empty($this->$field)) {
+                $filled++;
+            }
+        }
+
+        return round(($filled / count($fields)) * 100);
+    }
+
+    public function getMissingFieldsAttribute()
+    {
+        $fields = [
+            'first_name' => 'الاسم الأول',
+            'last_name' => 'الاسم الأخير',
+            'phone' => 'رقم الهاتف',
+            'email' => 'البريد الإلكتروني',
+            'image' => 'الصورة',
+            'birthdate' => 'تاريخ الميلاد',
+            'gender_id' => 'النوع',
+            'country_id' => 'الدولة',
+            'governorate_id' => 'المحافظة',
+            'area_id' => 'المنطقة',
+        ];
+
+        return collect($fields)->filter(function ($label, $field) {
+            return empty($this->$field);
+        })->values();
     }
 
     

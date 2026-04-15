@@ -28,10 +28,10 @@ Route::prefix('v-mobile')->group(function () {
         Route::get('countries','MobileApiController@countries');
 
         
-        // Route::middleware(['auth:api_users', 'user'])->group(function () {
+        Route::middleware(['auth:api_users', 'user'])->group(function () {
 
-       
+            Route::get('user_profile_completion','MobileApiController@user_profile_completion');
             
-        // });
+        });
 
 });
