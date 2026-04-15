@@ -112,39 +112,31 @@ class MobileApiController extends Controller
 
     public function login(Request $request)
     {
-        // ✅ validation
         $request->validate([
             'phone' => 'required',
-           
         ], [
             'phone.required' => 'يجب إدخال رقم الهاتف',
-            
         ]);
 
-        // ✅ تحديد credentials حسب المدخل
-        if ($request->filled('phone')) {
-            $credentials = [
-                'phone' => $request->phone,
-               
-                
-            ];
+       
+        $user = User::where('phone', $request->phone)->first();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'رقم الهاتف غير مسجل',
+            ], 404);
         }
 
-        // ✅ محاولة تسجيل الدخول
-        if (!$token = Auth::guard('api_users')->attempt($credentials)) {
-            throw ValidationException::withMessages([
-                'login' => ['بيانات الدخول غير صحيحة'],
-            ]);
-        }
+        // ❗ هنا المفروض تتحقق من OTP (مش مفعّل دلوقتي)
+        // if ($request->otp != $user->otp) { ... }
 
-        $user = Auth::guard('api_users')->user();
+        $token = JWTAuth::fromUser($user);
 
         return response()->json([
             'status' => true,
             'message' => 'تم تسجيل الدخول بنجاح',
-            'guard' => 'api_users',
             'token' => $token,
-            
         ]);
     }
    
