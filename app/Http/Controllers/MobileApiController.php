@@ -142,23 +142,16 @@ class MobileApiController extends Controller
 
     public function user_profile_completion()
     {
-        $data = auth()->guard('api_users')->user();
-        $data->transform(function ($data) {
-             return [
-           
-                'profile_completion'=> $data->profile_completion,
-                'missing_fields'=> $data->missing_fields,
-             ];
-               
-              
-        });
+        $user = auth()->guard('api_users')->user();
+
         return response()->json([
-                'status' => true,
-                'data' => $data,
-              
+            'status' => true,
+            'data' => [
+                'profile_completion' => $user->profile_completion,
+                'missing_fields' => $user->missing_fields,
+            ],
         ]);
     }
-   
     public function genders()
     {
         $data = Gender::latest()->get();
