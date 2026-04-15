@@ -27,6 +27,7 @@ Route::prefix('v-mobile')->group(function () {
         Route::get('genders','MobileApiController@genders');
         Route::get('countries','MobileApiController@countries');
 
+        
         // Route::middleware(['auth:api_users', 'user'])->group(function () {
 
        
