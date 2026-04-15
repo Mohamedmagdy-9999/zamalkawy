@@ -152,6 +152,68 @@ class MobileApiController extends Controller
             ],
         ]);
     }
+
+    public function complete_profile(Request $request)
+    {
+        $user = auth()->guard('api_users')->user();
+
+        $messages = [
+            'email.email' => 'صيغة البريد الإلكتروني غير صحيحة',
+            'image.image' => 'الملف يجب أن يكون صورة',
+            'image.mimes' => 'الصورة يجب أن تكون png أو jpg أو jpeg أو webp',
+            'image.max' => 'حجم الصورة يجب ألا يتجاوز 2 ميجا',
+            'birthdate.date' => 'صيغة التاريخ غير صحيحة',
+        ];
+
+        $data = $request->validate([
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'phone' => 'nullable|numeric|unique:users,phone,' . $user->id,
+            'email' => 'nullable|email|unique:users,email,' . $user->id,
+            'birthdate' => 'nullable|date|before:today',
+            'gender_id' => 'nullable|exists:genders,id',
+            'country_id' => 'nullable|exists:countries,id',
+            'governorate_id' => 'nullable|exists:governorates,id',
+            'area_id' => 'nullable|exists:areas,id',
+            'image' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:10240',
+        ], $messages);
+
+        try {
+
+            // ✅ رفع الصورة لو موجودة
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $imageName = time().'_'.$file->getClientOriginalName();
+                $file->move(public_path('users'), $imageName);
+
+                $data['image'] = $imageName;
+            }
+
+            // ✅ تحديث المستخدم
+            $user->update($data);
+
+            // reload user
+            $user = $user->fresh();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'تم تحديث البروفايل بنجاح',
+                'data' => [
+                    'user' => $user,
+                    'profile_completion' => $user->profile_completion,
+                    'missing_fields' => $user->missing_fields,
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'حدث خطأ أثناء تحديث البروفايل',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
     public function genders()
     {
         $data = Gender::latest()->get();
@@ -173,6 +235,8 @@ class MobileApiController extends Controller
         ]);
 
     }
+
+
 
  
 
