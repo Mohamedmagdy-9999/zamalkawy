@@ -103,8 +103,6 @@ class MobileApiController extends Controller
         }
     }
    
-   
-
     public function genders()
     {
         $data = Gender::latest()->get();
@@ -115,7 +113,6 @@ class MobileApiController extends Controller
         ]);
 
     }
-
 
     public function countries()
     {
