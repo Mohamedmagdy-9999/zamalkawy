@@ -13,7 +13,7 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory, Notifiable,SoftDeletes;
 
     protected $guarded = [];
-    protected $appends = ['image_url','country_name','governorate_name','area_name','gender_name'];
+    protected $appends = ['image_url','country_name','governorate_name','area_name','gender_name','club_name'];
     protected $hidden = [
         'password',
         'remember_token',
@@ -41,6 +41,7 @@ class User extends Authenticatable implements JWTSubject
             'governorate_name' => $this->governorate ? $this->governorate->name_ar : null,
             'area_name' => $this->area ? $this->area->name_ar : null,
             'gender_name' => $this->gender ? $this->gender->name_ar : null,
+            'club_name' => $this->club ? $this->club->name_ar : null,
             
         ];
     }
@@ -91,6 +92,16 @@ class User extends Authenticatable implements JWTSubject
     public function getGenderNameAttribute()
     {
         return $this->gender ? $this->gender->name_ar : null;
+    }
+
+    public function club()
+    {
+        return $this->belongsTo(Club::class,'club_id');
+    }
+
+    public function getClubNameAttribute()
+    {
+        return $this->club ? $this->club->name_ar : null;
     }
 
     
