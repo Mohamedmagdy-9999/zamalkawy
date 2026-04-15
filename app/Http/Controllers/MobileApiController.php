@@ -48,6 +48,10 @@ class MobileApiController extends Controller
             'image.mimes' => 'الصورة يجب أن تكون png أو jpg أو jpeg أو webp',
             'image.max' => 'حجم الصورة يجب ألا يتجاوز 2 ميجا',
 
+            'birthdate.required' => 'تاريخ الميلاد مطلوب',
+            'birthdate.date' => 'صيغة التاريخ غير صحيحة',
+            'birthdate.before' => 'تاريخ الميلاد غير صحيح',
+
         ];
 
         $data = $request->validate([
@@ -55,6 +59,7 @@ class MobileApiController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            'birthdate' => 'required|date|before:today',
             'image' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:10240',
         ], $messages);
 
@@ -77,6 +82,7 @@ class MobileApiController extends Controller
                 'phone' => $data['phone'],
                 'email' => $data['email'],
                 'image' => $imageName,
+                'birthdate' => $data['birthdate'],
                 'club_id' => 1,
             ]);
 
