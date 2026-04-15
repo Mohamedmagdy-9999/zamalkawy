@@ -109,6 +109,44 @@ class MobileApiController extends Controller
             ], 500);
         }
     }
+
+    public function login(Request $request)
+    {
+        // ✅ validation
+        $request->validate([
+            'phone' => 'required',
+           
+        ], [
+            'phone.required' => 'يجب إدخال رقم الهاتف',
+            
+        ]);
+
+        // ✅ تحديد credentials حسب المدخل
+        if ($request->filled('phone')) {
+            $credentials = [
+                'phone' => $request->phone,
+               
+                
+            ];
+        }
+
+        // ✅ محاولة تسجيل الدخول
+        if (!$token = Auth::guard('api_users')->attempt($credentials)) {
+            throw ValidationException::withMessages([
+                'login' => ['بيانات الدخول غير صحيحة'],
+            ]);
+        }
+
+        $user = Auth::guard('api_users')->user();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم تسجيل الدخول بنجاح',
+            'guard' => 'api_users',
+            'token' => $token,
+            
+        ]);
+    }
    
     public function genders()
     {

@@ -22,7 +22,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('v-mobile')->group(function () {
     
          Route::post('register', 'MobileApiController@register');
-        // Route::post('login', 'AuthApiController@login');
+        Route::post('login', 'MobileApiController@login');
 
         Route::get('genders','MobileApiController@genders');
         Route::get('countries','MobileApiController@countries');
