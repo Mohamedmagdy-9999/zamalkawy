@@ -55,7 +55,7 @@ class Blog extends Model
 
     public function getViewsCountAttribute()
     {
-        return $this->views;
+        return $this->views()->count();
     }
 
     public function likes()
