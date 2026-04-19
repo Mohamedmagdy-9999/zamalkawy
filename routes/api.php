@@ -31,7 +31,9 @@ Route::prefix('v-mobile')->group(function () {
         Route::middleware(['auth:api_users', 'user'])->group(function () {
 
             Route::get('user_profile_completion','MobileApiController@user_profile_completion');
-             Route::post('complete_profile','MobileApiController@complete_profile');
+            Route::post('complete_profile','MobileApiController@complete_profile');
+
+            Route::get('categories','MobileApiController@categories');
             
         });
 

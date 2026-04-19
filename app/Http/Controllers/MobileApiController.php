@@ -19,11 +19,69 @@ use App\Models\Country;
 use App\Models\Governorate;
 use App\Models\Area;
 use App\Models\Gender;
+use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
-
+// use Kreait\Firebase\Factory;
 class MobileApiController extends Controller
 {
 
+    //register with firebase otp
+    // public function register(Request $request)
+    // {
+    //     $request->validate([
+    //         'firebase_token' => 'required',
+    //         'first_name' => 'required',
+    //         'last_name' => 'required',
+    //         'email' => 'required|email|unique:users,email',
+    //         'birthdate' => 'required|date',
+    //     ]);
+
+    //     try {
+    //         $factory = (new Factory)->withServiceAccount(storage_path('app/firebase.json'));
+    //         $auth = $factory->createAuth();
+
+    //         $verifiedIdToken = $auth->verifyIdToken($request->firebase_token);
+
+    //         $uid = $verifiedIdToken->claims()->get('sub');
+    //         $phone = $verifiedIdToken->claims()->get('phone_number');
+
+    //         // تحقق من الرقم
+    //         if (User::where('phone', $phone)->exists()) {
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'message' => 'رقم الهاتف مسجل بالفعل'
+    //             ], 400);
+    //         }
+
+    //         DB::beginTransaction();
+
+    //         $user = User::create([
+    //             'first_name' => $request->first_name,
+    //             'last_name' => $request->last_name,
+    //             'phone' => $phone,
+    //             'email' => $request->email,
+    //             'birthdate' => $request->birthdate,
+    //             'club_id' => 1,
+    //         ]);
+
+    //         $token = JWTAuth::fromUser($user);
+
+    //         DB::commit();
+
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'تم إنشاء الحساب',
+    //             'token' => $token
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'OTP غير صحيح',
+    //             'error' => $e->getMessage()
+    //         ], 401);
+    //     }
+    // }
 
     public function register(Request $request)
     {
@@ -110,6 +168,45 @@ class MobileApiController extends Controller
         }
     }
 
+    //login with firebase otp
+    // public function login(Request $request)
+    // {
+    //     $request->validate([
+    //         'firebase_token' => 'required',
+    //     ]);
+
+    //     try {
+    //         $factory = (new Factory)->withServiceAccount(storage_path('app/firebase.json'));
+    //         $auth = $factory->createAuth();
+
+    //         $verifiedIdToken = $auth->verifyIdToken($request->firebase_token);
+    //         $phone = $verifiedIdToken->claims()->get('phone_number');
+
+    //         $user = User::where('phone', $phone)->first();
+
+    //         if (!$user) {
+    //             return response()->json([
+    //                 'status' => false,
+    //                 'message' => 'رقم الهاتف غير مسجل',
+    //             ], 404);
+    //         }
+
+    //         $token = JWTAuth::fromUser($user);
+
+    //         return response()->json([
+    //             'status' => true,
+    //             'message' => 'تم تسجيل الدخول',
+    //             'token' => $token
+    //         ]);
+
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'OTP غير صحيح'
+    //         ], 401);
+    //     }
+    // }
+
     public function login(Request $request)
     {
         $request->validate([
@@ -139,6 +236,8 @@ class MobileApiController extends Controller
             'token' => $token,
         ]);
     }
+
+
 
     public function user_profile_completion()
     {
@@ -228,6 +327,17 @@ class MobileApiController extends Controller
     public function countries()
     {
         $data = Country::with('governorates.areas')->latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
+    }
+
+    public function categories()
+    {
+        $data = Category::latest()->get();
         return response()->json([
                 'status' => true,
                 'data' => $data,
