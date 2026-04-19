@@ -34,6 +34,9 @@ Route::prefix('v-mobile')->group(function () {
             Route::post('complete_profile','MobileApiController@complete_profile');
 
             Route::get('categories','MobileApiController@categories');
+
+            Route::get('blogs','MobileApiController@blogs');
+            Route::get('blog_details/{id}','MobileApiController@blog_details');
             
         });
 

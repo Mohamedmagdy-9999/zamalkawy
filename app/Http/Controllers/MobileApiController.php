@@ -22,6 +22,7 @@ use App\Models\Gender;
 use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
 // use Kreait\Firebase\Factory;
+use App\Models\Blog;
 class MobileApiController extends Controller
 {
 
@@ -344,6 +345,78 @@ class MobileApiController extends Controller
               
         ]);
 
+    }
+
+    public function blogs(Request $request)
+    {
+        $data = Blog::query()
+
+            ->when($request->category_id, fn ($q, $v) =>
+                $q->where('category_id', $v))
+
+            ->when($request->from, fn ($q, $v) =>
+                $q->whereDate('created_at', '>=', $v))
+
+            ->when($request->to, fn ($q, $v) =>
+                $q->whereDate('created_at', '<=', $v))
+
+            ->when($request->search, function ($q, $search) {
+                $q->where(function ($query) use ($search) {
+                    $query->where('title_ar', 'like', "%$search%")
+                        ->orWhere('title_en', 'like', "%$search%")
+                        ->orWhere('desc_ar', 'like', "%$search%")
+                        ->orWhere('desc_en', 'like', "%$search%");
+                });
+            })
+
+            // ✅ فلتر الترتيب
+            ->when($request->order, function ($q, $order) {
+                if ($order == 'oldest') {
+                    $q->orderBy('created_at', 'asc');
+                } else {
+                    $q->orderBy('created_at', 'desc'); // default latest
+                }
+            }, function ($q) {
+                $q->latest(); // default لو مفيش order
+            })
+
+            ->paginate(20);
+
+        $data->getCollection()->transform(function ($data) {
+            return [
+                'id'  => $data->id,
+                'title'=> $data->title,
+                'desc'=> $data->desc,
+                'image_url'=> $data->image_url,
+                'category_name'=> $data->category_name,
+                'category_id'=> $data->category_id,
+                'created_at' => optional($data->created_at)->format('d-m-Y'),
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ]);
+    }
+
+    public function blog_details($id)
+    {
+        $blog = Blog::findOrFail($id);
+
+        $data = [
+            'id' => $blog->id,
+            'title' => $blog->title,
+            'desc' => $blog->desc,
+            'image_url' => $blog->image_url,
+            'category_name' => $blog->category_name,
+            'created_at' => optional($blog->created_at)->format('d-m-Y'),
+        ];
+
+        return response()->json([
+            'status' => true,
+            'data' => $data
+        ]);
     }
 
 
