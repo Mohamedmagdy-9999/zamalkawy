@@ -38,6 +38,8 @@ Route::prefix('v-mobile')->group(function () {
             Route::get('blogs','MobileApiController@blogs');
             Route::get('blog_details/{id}','MobileApiController@blog_details');
             
+            Route::post('toggle_like/{id}','MobileApiController@toggle_like');
+            
         });
 
 });

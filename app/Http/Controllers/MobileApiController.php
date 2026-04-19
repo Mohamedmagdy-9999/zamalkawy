@@ -411,7 +411,30 @@ class MobileApiController extends Controller
             'image_url' => $blog->image_url,
             'category_name' => $blog->category_name,
             'created_at' => optional($blog->created_at)->format('d-m-Y'),
+            'views_count' => $blog->views_count,
+            'is_liked' => $blog->is_liked,
         ];
+
+        $userId = auth()->guard('api_users')->id();
+
+        if ($userId) {
+
+            $exists = DB::table('blog_views')
+                ->where('blog_id', $blog->id)
+                ->where('user_id', $userId)
+                ->exists();
+
+            if (!$exists) {
+                DB::table('blog_views')->insert([
+                    'blog_id' => $blog->id,
+                    'user_id' => $userId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                $blog->increment('views');
+            }
+        }
 
         return response()->json([
             'status' => true,
@@ -420,6 +443,53 @@ class MobileApiController extends Controller
     }
 
 
+    public function toggle_like($id)
+    {
+        $blog = Blog::findOrFail($id);
+        $userId = auth()->guard('api_users')->id();
+
+        if (!$userId) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        $exists = DB::table('blog_likes')
+            ->where('blog_id', $blog->id)
+            ->where('user_id', $userId)
+            ->exists();
+
+        if ($exists) {
+            // 👎 Unlike
+            DB::table('blog_likes')
+                ->where('blog_id', $blog->id)
+                ->where('user_id', $userId)
+                ->delete();
+
+            $blog->decrement('likes');
+
+            $liked = false;
+        } else {
+            // 👍 Like
+            DB::table('blog_likes')->insert([
+                'blog_id' => $blog->id,
+                'user_id' => $userId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $blog->increment('likes');
+
+            $liked = true;
+        }
+
+        return response()->json([
+            'status' => true,
+            'liked' => $liked,
+            'likes_count' => $blog->likes
+        ]);
+    }
 
  
 
