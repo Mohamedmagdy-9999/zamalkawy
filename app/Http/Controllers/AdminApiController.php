@@ -233,7 +233,6 @@ class AdminApiController extends Controller
         $blog->title_en = $request->title_en;
         $blog->desc_ar = $request->desc_ar;
         $blog->desc_en = $request->desc_en;
-        $blog->admin_name = $admin->name;
         $blog->club_id = $admin->club_id;
         $blog->save();
 
