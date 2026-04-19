@@ -455,23 +455,19 @@ class MobileApiController extends Controller
             ], 401);
         }
 
-        $exists = DB::table('blog_likes')
+        $like = DB::table('blog_likes')
             ->where('blog_id', $blog->id)
             ->where('user_id', $userId)
-            ->exists();
+            ->first();
 
-        if ($exists) {
-            // 👎 Unlike
+        if ($like) {
             DB::table('blog_likes')
                 ->where('blog_id', $blog->id)
                 ->where('user_id', $userId)
                 ->delete();
 
-            $blog->decrement('likes');
-
             $liked = false;
         } else {
-            // 👍 Like
             DB::table('blog_likes')->insert([
                 'blog_id' => $blog->id,
                 'user_id' => $userId,
@@ -479,15 +475,13 @@ class MobileApiController extends Controller
                 'updated_at' => now(),
             ]);
 
-            $blog->increment('likes');
-
             $liked = true;
         }
 
         return response()->json([
             'status' => true,
             'liked' => $liked,
-            'likes_count' => $blog->likes
+            'likes_count' => $blog->likes()->count()
         ]);
     }
 
