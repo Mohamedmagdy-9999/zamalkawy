@@ -38,3 +38,24 @@ Route::prefix('v-mobile')->group(function () {
         });
 
 });
+
+
+Route::prefix('v-admin')->group(function () {
+    
+   
+    Route::post('admin_login', 'AdminApiController@admin_login');
+        Route::middleware(['auth:api_admins', 'admin'])->group(function () {
+            Route::get('check_admin', 'AdminApiController@admin_check');
+            Route::post('update_admin_profile', 'AdminApiController@update_admin_profile');
+            Route::post('admin_change_password', 'AdminApiController@admin_change_password');
+        
+            Route::post('add_blog', 'AdminApiController@add_blog');
+            Route::post('update_blog/{id}', 'AdminApiController@update_blog');
+            Route::delete('delete_blog/{id}', 'AdminApiController@delete_blog');
+            Route::get('blogs', 'AdminApiController@blogs');
+            Route::get('single_blog/{id}', 'AdminApiController@single_blog');
+
+            
+        });
+
+});
