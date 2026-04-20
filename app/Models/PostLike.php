@@ -10,4 +10,21 @@ class PostLike extends Model
     use HasFactory;
 
     protected $guarded = [];
+     protected $hidden = ['user_id','created_at','updated_at','user'];
+    protected $appends = ['user_name','user_image_url'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function getUserNameAttribute()
+    {
+         return $this->user ? $this->user->first_name .' '. $this->user->last_name : null;
+    }
+
+    public function getUserImageUrlAttribute()
+    {
+         return $this->user ? $this->user->image_url : null;
+    }
 }
