@@ -21,6 +21,7 @@ class User extends Authenticatable implements JWTSubject
         'test',
     ];
     
+    
     protected $dates = ['deleted_at'];
 
     // ✅ مطلوب من JWT
