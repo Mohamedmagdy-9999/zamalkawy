@@ -45,6 +45,7 @@ Route::prefix('v-mobile')->group(function () {
             Route::get('all_posts','MobileApiController@all_posts');
 
             Route::post('add_comment/{id}','MobileApiController@add_comment');
+            Route::post('toggle_post_like/{id}','MobileApiController@toggle_post_like');
             
         });
 
