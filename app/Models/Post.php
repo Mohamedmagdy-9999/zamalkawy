@@ -9,11 +9,21 @@ class Post extends Model
 {
     protected $guarded = [];
 
-    protected $appends = ['image_url', 'likes_count', 'comments_count', 'is_liked'];
+    protected $appends = ['image_url', 'likes_count', 'comments_count', 'is_liked','user_name','user_image_url'];
 
     public function user()
     {
         return $this->belongsTo(User::class,'user_id');
+    }
+
+    public function getUserNameAttribute()
+    {
+         return $this->user ? $this->user->first_name .' '. $this->user->last_name : null;
+    }
+
+    public function getUserImageUrlAttribute()
+    {
+         return $this->user ? $this->user->image_url : null;
     }
 
     public function comments()
