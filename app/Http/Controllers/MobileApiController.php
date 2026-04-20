@@ -495,7 +495,7 @@ class MobileApiController extends Controller
             'image' => 'حقل :attribute يجب أن يكون صورة.',
             'mimes' => 'حقل :attribute يجب أن يكون بصيغة jpg أو jpeg أو png.',
             'max.file' => 'حقل :attribute يجب ألا يتجاوز 2 ميجا.',
-            'exists' => 'القسم غير موجود.',
+           
         ];
 
         $attributes = [
@@ -505,7 +505,6 @@ class MobileApiController extends Controller
 
         $request->validate([
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'category_id' => 'required|exists:categories,id',
             'content' => 'required|string|max:500',
         ], $messages, $attributes);
 
