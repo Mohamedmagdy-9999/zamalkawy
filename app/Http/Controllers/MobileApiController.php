@@ -545,10 +545,10 @@ class MobileApiController extends Controller
                 'likes_count'=> $item->likes_count,
                 'comments_count'=> $item->comments_count,
                 'is_liked'=> $item->is_liked,
-                'comments'=> $item->comments,
                 'created_at' => optional($item->created_at)->format('d-m-Y'),
                 'user_name'=> $item->user_name,
                 'user_image_url'=> $item->user_image_url,
+                'comments'=> $item->comments,
             ];
         });
 
@@ -571,10 +571,10 @@ class MobileApiController extends Controller
                 'likes_count'=> $item->likes_count,
                 'comments_count'=> $item->comments_count,
                 'is_liked'=> $item->is_liked,
-                'comments'=> $item->comments,
                 'created_at' => optional($item->created_at)->format('d-m-Y'),
                 'user_name'=> $item->user_name,
                 'user_image_url'=> $item->user_image_url,
+                 'comments'=> $item->comments,
             ];
         });
 
