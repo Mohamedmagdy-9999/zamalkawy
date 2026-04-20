@@ -488,20 +488,47 @@ class MobileApiController extends Controller
 
     public function add_post(Request $request)
     {
+       
+
+        $messages = [
+            'required' => 'حقل :attribute مطلوب.',
+            'image' => 'حقل :attribute يجب أن يكون صورة.',
+            'mimes' => 'حقل :attribute يجب أن يكون بصيغة jpg أو jpeg أو png.',
+            'max.file' => 'حقل :attribute يجب ألا يتجاوز 2 ميجا.',
+            'exists' => 'القسم غير موجود.',
+        ];
+
+        $attributes = [
+            'image' => 'الصورة',
+            'content' => 'المحتوي',
+        ];
+
+        $request->validate([
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'category_id' => 'required|exists:categories,id',
+            'content' => 'required|string|max:500',
+        ], $messages, $attributes);
+
+        
+        $name = null;
+        if ($file = $request->file('image')) {
+            $name = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('posts'), $name);
+        }
+
         $userId = auth()->guard('api_users')->id();
 
-        $post = Post::create([
-            'user_id' => $userId,
-            'content' => $request->content,
-            'image' => $request->file('image') 
-                ? uploadImage($request->file('image'), 'posts')
-                : null,
-        ]);
+        $post = new Post();
+        $post->image = $name;
+        $post->user_id = $userId;
+        $post->content = $request->content;
+        $post->save();
 
         return response()->json([
             'status' => true,
-            'data' => $post
-        ]);
+            'message' => 'تم الاضافة بنجاح',
+        ], 200);
+
     }
  
 
