@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Comment extends Model
 {
     protected $guarded = [];
-    protected $hidden = ['user_id','updated_at'];
+    protected $hidden = ['user_id','updated_at','user'];
     protected $appends = ['user_name','user_image_url'];
 
     public function user()
