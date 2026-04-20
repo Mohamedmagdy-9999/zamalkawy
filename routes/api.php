@@ -43,6 +43,8 @@ Route::prefix('v-mobile')->group(function () {
 
             Route::get('my_posts','MobileApiController@my_posts');
             Route::get('all_posts','MobileApiController@all_posts');
+
+            Route::post('add_comment/{id}','MobileApiController@add_comment');
             
         });
 

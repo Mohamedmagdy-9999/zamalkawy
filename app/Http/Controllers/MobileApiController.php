@@ -584,6 +584,21 @@ class MobileApiController extends Controller
 
     }
  
+    public function add_comment(Request $request, $id)
+    {
+        $userId = auth()->guard('api_users')->id();
+
+        $comment = Comment::create([
+            'user_id' => $userId,
+            'post_id' => $id,
+            'comment' => $request->comment
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم الاضافة بنجاح',
+        ]);
+    }
 
 
    
