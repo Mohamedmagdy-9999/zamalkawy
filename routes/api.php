@@ -42,6 +42,7 @@ Route::prefix('v-mobile')->group(function () {
             Route::post('add_post','MobileApiController@add_post');
 
             Route::get('my_posts','MobileApiController@my_posts');
+            Route::get('all_posts','MobileApiController@all_posts');
             
         });
 

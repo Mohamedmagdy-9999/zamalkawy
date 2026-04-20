@@ -555,6 +555,30 @@ class MobileApiController extends Controller
         ], 200);
 
     }
+
+    public function all_posts(Request $request)
+    {
+       
+        $data =  Post::latest()->paginate(10);
+        $data->getCollection()->transform(function ($item) {
+            return [
+                'id'  => $item->id,
+                'content'=> $item->content,
+                'image_url'=> $item->image_url,
+                'likes_count'=> $item->likes_count,
+                'comments_count'=> $item->comments_count,
+                'is_liked'=> $item->is_liked,
+                'comments'=> $item->comments,
+                'created_at' => optional($item->created_at)->format('d-m-Y'),
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ], 200);
+
+    }
  
 
 
