@@ -23,6 +23,7 @@ use App\Models\Category;
 use Illuminate\Support\Facades\Validator;
 // use Kreait\Firebase\Factory;
 use App\Models\Blog;
+use App\Models\Post;
 class MobileApiController extends Controller
 {
 
@@ -485,6 +486,23 @@ class MobileApiController extends Controller
         ]);
     }
 
+    public function add_post(Request $request)
+    {
+        $userId = auth()->guard('api_users')->id();
+
+        $post = Post::create([
+            'user_id' => $userId,
+            'content' => $request->content,
+            'image' => $request->file('image') 
+                ? uploadImage($request->file('image'), 'posts')
+                : null,
+        ]);
+
+        return response()->json([
+            'status' => true,
+            'data' => $post
+        ]);
+    }
  
 
 
