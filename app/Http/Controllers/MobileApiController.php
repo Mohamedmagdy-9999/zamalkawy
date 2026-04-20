@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Validator;
 // use Kreait\Firebase\Factory;
 use App\Models\Blog;
 use App\Models\Post;
+use App\Models\Comment;
 class MobileApiController extends Controller
 {
 
