@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Blog;
 use App\Models\Post;
 use App\Models\Comment;
-use App\Models\Referral;
+use App\Models\Referrals;
 class MobileApiController extends Controller
 {
 
@@ -167,13 +167,13 @@ class MobileApiController extends Controller
                 $ip = $request->ip();
 
                 // 🛑 Anti-Fraud
-                $fraudCheck = Referral::where('device_id', $deviceId)
+                $fraudCheck = Referrals::where('device_id', $deviceId)
                     ->orWhere('ip_address', $ip)
                     ->exists();
 
                 if (!$fraudCheck) {
 
-                    Referral::create([
+                    Referrals::create([
                         'referrer_id' => $referrer->id,
                         'referred_id' => $user->id,
                         'referral_code' => $data['referral_code'],
