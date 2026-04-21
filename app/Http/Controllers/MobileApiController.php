@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\Blog;
 use App\Models\Post;
 use App\Models\Comment;
+use App\Models\Referral;
 class MobileApiController extends Controller
 {
 
@@ -86,33 +87,23 @@ class MobileApiController extends Controller
     //     }
     // }
 
+
+
     public function register(Request $request)
     {
-        // ✅ رسائل عربية
         $messages = [
-            
             'phone.required' => 'رقم الهاتف مطلوب',
             'phone.numeric' => 'رقم الهاتف يجب أن يكون أرقام فقط',
             'phone.unique' => 'رقم الهاتف مستخدم من قبل',
 
             'first_name.required' => 'الاسم مطلوب',
-            'first_name.max' => 'الاسم طويل جدًا',
-
             'last_name.required' => 'الاسم مطلوب',
-            'last_name.max' => 'الاسم طويل جدًا',
 
             'email.required' => 'البريد الإلكتروني مطلوب',
             'email.email' => 'صيغة البريد الإلكتروني غير صحيحة',
             'email.unique' => 'البريد الإلكتروني مستخدم من قبل',
 
-            'image.image' => 'الملف يجب أن يكون صورة',
-            'image.mimes' => 'الصورة يجب أن تكون png أو jpg أو jpeg أو webp',
-            'image.max' => 'حجم الصورة يجب ألا يتجاوز 2 ميجا',
-
             'birthdate.required' => 'تاريخ الميلاد مطلوب',
-            'birthdate.date' => 'صيغة التاريخ غير صحيحة',
-            'birthdate.before' => 'تاريخ الميلاد غير صحيح',
-
         ];
 
         $data = $request->validate([
@@ -122,13 +113,14 @@ class MobileApiController extends Controller
             'email' => 'required|email|unique:users,email',
             'birthdate' => 'required|date|before:today',
             'image' => 'nullable|image|mimes:png,jpg,jpeg,webp|max:10240',
+            'referral_code' => 'nullable|string',
         ], $messages);
 
         DB::beginTransaction();
 
         try {
 
-            // ✅ رفع الصورة
+            // 📸 رفع الصورة
             $imageName = null;
             if ($request->hasFile('image')) {
                 $file = $request->file('image');
@@ -136,7 +128,26 @@ class MobileApiController extends Controller
                 $file->move(public_path('users'), $imageName);
             }
 
-            // ✅ إنشاء المواطن
+            // 🎯 التحقق من كود الدعوة
+            $referrer = null;
+
+            if (!empty($data['referral_code'])) {
+                $referrer = User::where('referral_code', $data['referral_code'])->first();
+
+                if (!$referrer) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'كود الدعوة غير صحيح'
+                    ], 400);
+                }
+            }
+
+            // 🔐 توليد كود فريد
+            do {
+                $code = strtoupper(Str::random(8));
+            } while (User::where('referral_code', $code)->exists());
+
+            // 👤 إنشاء المستخدم
             $user = User::create([
                 'first_name' => $data['first_name'],
                 'last_name' => $data['last_name'],
@@ -145,9 +156,38 @@ class MobileApiController extends Controller
                 'image' => $imageName,
                 'birthdate' => $data['birthdate'],
                 'club_id' => 1,
+                'referral_code' => $code,
+                'referred_by' => $referrer?->id,
             ]);
 
-        
+            // 🔥 نظام الدعوات
+            if ($referrer && $referrer->id != $user->id) {
+
+                $deviceId = $request->header('device-id');
+                $ip = $request->ip();
+
+                // 🛑 Anti-Fraud
+                $fraudCheck = Referral::where('device_id', $deviceId)
+                    ->orWhere('ip_address', $ip)
+                    ->exists();
+
+                if (!$fraudCheck) {
+
+                    Referral::create([
+                        'referrer_id' => $referrer->id,
+                        'referred_id' => $user->id,
+                        'referral_code' => $data['referral_code'],
+                        'device_id' => $deviceId,
+                        'ip_address' => $ip,
+                    ]);
+
+                    // 🎁 نقاط
+                    $referrer->increment('points', 10);
+                    $user->increment('points', 5);
+                }
+            }
+
+            // 🔐 تسجيل دخول
             $token = Auth::guard('api_users')->login($user);
 
             DB::commit();
@@ -155,9 +195,8 @@ class MobileApiController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => 'تم إنشاء الحساب بنجاح',
-                'guard' => 'api_users',
                 'token' => $token,
-              
+                'user' => $user
             ]);
 
         } catch (\Exception $e) {
@@ -165,12 +204,12 @@ class MobileApiController extends Controller
 
             return response()->json([
                 'status' => false,
-                'message' => 'حدث خطأ أثناء إنشاء الحساب',
-                'error' => $e->getMessage(), // احذفها في الإنتاج
+                'message' => 'حدث خطأ',
+                'error' => $e->getMessage()
             ], 500);
         }
     }
-
+    
     //login with firebase otp
     // public function login(Request $request)
     // {
