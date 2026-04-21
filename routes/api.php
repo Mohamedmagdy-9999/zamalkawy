@@ -31,6 +31,7 @@ Route::prefix('v-mobile')->group(function () {
 
             Route::get('user_profile_completion','MobileApiController@user_profile_completion');
             Route::post('complete_profile','MobileApiController@complete_profile');
+            Route::post('delete_user', 'AuthApiController@delete_user');
 
             Route::get('categories','MobileApiController@categories');
 

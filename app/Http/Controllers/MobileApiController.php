@@ -278,6 +278,26 @@ class MobileApiController extends Controller
         ]);
     }
 
+    public function delete_user(Request $request)
+    {
+        $user = Auth::guard('api_users')->user();
+
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'المستخدم غير موجود أو التوكن غير صالح'
+            ], 401);
+        }
+
+        // Soft delete مباشرة
+        $user->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم الحذف بنجاح',
+        ]);
+    }
+
 
 
     public function user_profile_completion()
