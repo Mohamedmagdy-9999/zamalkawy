@@ -39,6 +39,7 @@ class User extends Authenticatable implements JWTSubject
             'email' => $this->email,
             'phone' => $this->phone,
             'referral_code' => $this->referral_code,
+            'points' => $this->points,
             'image' => $this->image_url,
             'country_name' => $this->country ? $this->country->name_ar : null,
             'governorate_name' => $this->governorate ? $this->governorate->name_ar : null,
