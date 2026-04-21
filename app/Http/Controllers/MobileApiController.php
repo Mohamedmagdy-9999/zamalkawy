@@ -196,7 +196,6 @@ class MobileApiController extends Controller
                 'status' => true,
                 'message' => 'تم إنشاء الحساب بنجاح',
                 'token' => $token,
-                'user' => $user
             ]);
 
         } catch (\Exception $e) {
@@ -209,7 +208,7 @@ class MobileApiController extends Controller
             ], 500);
         }
     }
-    
+
     //login with firebase otp
     // public function login(Request $request)
     // {
