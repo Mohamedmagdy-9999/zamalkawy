@@ -28,6 +28,7 @@ use App\Models\Comment;
 use App\Models\Referrals;
 use App\Models\MerchantCategory;
 use App\Models\Merchant;
+use App\Models\Deal;
 class MobileApiController extends Controller
 {
 
@@ -746,6 +747,54 @@ class MobileApiController extends Controller
 
     }
 
+     public function add_deal(Request $request)
+     {
+        
+        
+         $name = null;
+         if ($file = $request->file('image')) {
+             $name = time() . '_' . $file->getClientOriginalName();
+             $file->move(public_path('deals'), $name);
+         }
+
+        
+
+        $deal = new Deal();
+        $deal->image = $name;
+        $deal->merchant_id = $request->merchant_id;
+        $deal->desc_en = $request->desc_en;
+        $deal->desc_ar = $request->desc_ar;
+        $deal->price = $request->price;
+        $deal->end_date = $request->end_date;
+        $deal->save();
+
+         return response()->json([
+             'status' => true,
+             'message' => 'تم الاضافة بنجاح',
+         ], 200);
+     }
+
+     public function deals()
+    {
+        $data =  Deal::latest()->paginate(10);
+        $data->getCollection()->transform(function ($item) {
+            return [
+                'id'  => $item->id,
+                'desc'=> $item->desc,
+                'image_url'=> $item->image_url,
+                'merchant_name'=> $item->merchant_name,
+                'price'=> $item->price,
+                'end_date'=> $item->end_date,
+               
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ], 200);
+
+    }
 }
 
 
