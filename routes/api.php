@@ -48,8 +48,10 @@ Route::prefix('v-mobile')->group(function () {
             Route::post('add_comment/{id}','MobileApiController@add_comment');
             Route::post('toggle_post_like/{id}','MobileApiController@toggle_post_like');
 
-
             Route::get('merchant_cats','MobileApiController@merchant_cats');
+
+            Route::post('add_merchant','MobileApiController@add_merchant');
+            Route::get('merchants','MobileApiController@merchants');
             
         });
 

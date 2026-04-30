@@ -700,7 +700,7 @@ class MobileApiController extends Controller
     }
 
 
-   public function add_blog(Request $request)
+    public function add_merchant(Request $request)
     {
         
         
@@ -714,11 +714,9 @@ class MobileApiController extends Controller
 
         $blog = new Merchant();
         $blog->image = $name;
-        $blog->category_id = $request->category_id;
-        $blog->title_ar = $request->title_ar;
-        $blog->title_en = $request->title_en;
-        $blog->desc_ar = $request->desc_ar;
-        $blog->desc_en = $request->desc_en;
+        $blog->merchant_category_id = $request->merchant_category_id;
+        $blog->name_en = $request->name_en;
+        $blog->name_ar = $request->name_ar;
         $blog->club_id = $admin->club_id;
         $blog->save();
 
@@ -726,6 +724,17 @@ class MobileApiController extends Controller
             'status' => true,
             'message' => 'تم الاضافة بنجاح',
         ], 200);
+    }
+
+    public function merchants()
+    {
+        $data = Merchant::latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
     }
 
 }
