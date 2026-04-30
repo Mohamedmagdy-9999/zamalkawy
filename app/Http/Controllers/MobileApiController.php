@@ -717,7 +717,7 @@ class MobileApiController extends Controller
         $blog->merchant_category_id = $request->merchant_category_id;
         $blog->name_en = $request->name_en;
         $blog->name_ar = $request->name_ar;
-        $blog->club_id = $admin->club_id;
+        $blog->club_id = 1;
         $blog->save();
 
         return response()->json([
