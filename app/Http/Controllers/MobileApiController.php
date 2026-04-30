@@ -727,12 +727,22 @@ class MobileApiController extends Controller
 
     public function merchants()
     {
-        $data = Merchant::latest()->get();
+        $data =  Merchant::latest()->paginate(10);
+        $data->getCollection()->transform(function ($item) {
+            return [
+                'id'  => $item->id,
+                'name'=> $item->name,
+                'image_url'=> $item->image_url,
+                'category_name'=> $item->category_name,
+                'club_name'=> $item->club_name,
+               
+            ];
+        });
+
         return response()->json([
-                'status' => true,
-                'data' => $data,
-              
-        ]);
+            'status' => true,
+            'data' => $data,
+        ], 200);
 
     }
 
