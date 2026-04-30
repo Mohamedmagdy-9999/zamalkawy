@@ -747,32 +747,32 @@ class MobileApiController extends Controller
 
     }
 
-     public function add_deal(Request $request)
-     {
+    //  public function add_deal(Request $request)
+    //  {
         
         
-         $name = null;
-         if ($file = $request->file('image')) {
-             $name = time() . '_' . $file->getClientOriginalName();
-             $file->move(public_path('deals'), $name);
-         }
+    //      $name = null;
+    //      if ($file = $request->file('image')) {
+    //          $name = time() . '_' . $file->getClientOriginalName();
+    //          $file->move(public_path('deals'), $name);
+    //      }
 
         
 
-        $deal = new Deal();
-        $deal->image = $name;
-        $deal->merchant_id = $request->merchant_id;
-        $deal->desc_en = $request->desc_en;
-        $deal->desc_ar = $request->desc_ar;
-        $deal->price = $request->price;
-        $deal->end_date = $request->end_date;
-        $deal->save();
+    //     $deal = new Deal();
+    //     $deal->image = $name;
+    //     $deal->merchant_id = $request->merchant_id;
+    //     $deal->desc_en = $request->desc_en;
+    //     $deal->desc_ar = $request->desc_ar;
+    //     $deal->price = $request->price;
+    //     $deal->end_date = $request->end_date;
+    //     $deal->save();
 
-         return response()->json([
-             'status' => true,
-             'message' => 'تم الاضافة بنجاح',
-         ], 200);
-     }
+    //      return response()->json([
+    //          'status' => true,
+    //          'message' => 'تم الاضافة بنجاح',
+    //      ], 200);
+    //  }
 
      public function deals()
     {

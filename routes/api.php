@@ -52,7 +52,7 @@ Route::prefix('v-mobile')->group(function () {
 
             Route::get('merchants','MobileApiController@merchants');
 
-            Route::post('add_deal','MobileApiController@add_deal');
+           
             Route::get('deals','MobileApiController@deals');
             
         });
