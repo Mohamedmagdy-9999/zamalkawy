@@ -26,6 +26,8 @@ use App\Models\Blog;
 use App\Models\Post;
 use App\Models\Comment;
 use App\Models\Referrals;
+use App\Models\MerchantCategory;
+use App\Models\Merchant;
 class MobileApiController extends Controller
 {
 
@@ -686,7 +688,45 @@ class MobileApiController extends Controller
         ]);
     }
 
-   
+    public function merchant_cats()
+    {
+        $data = MerchantCategory::latest()->get();
+        return response()->json([
+                'status' => true,
+                'data' => $data,
+              
+        ]);
+
+    }
+
+
+   public function add_blog(Request $request)
+    {
+        
+        
+        $name = null;
+        if ($file = $request->file('image')) {
+            $name = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('merchants'), $name);
+        }
+
+        
+
+        $blog = new Merchant();
+        $blog->image = $name;
+        $blog->category_id = $request->category_id;
+        $blog->title_ar = $request->title_ar;
+        $blog->title_en = $request->title_en;
+        $blog->desc_ar = $request->desc_ar;
+        $blog->desc_en = $request->desc_en;
+        $blog->club_id = $admin->club_id;
+        $blog->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'تم الاضافة بنجاح',
+        ], 200);
+    }
 
 }
 
