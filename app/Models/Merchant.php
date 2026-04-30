@@ -10,7 +10,7 @@ class Merchant extends Model
     use HasFactory;
 
     protected $hidden = ['created_at','updated_at','name_ar','name_en','merchant_category_id','club_id'];
-    protected $appends = ['name','category_name','club_name'];
+    protected $appends = ['name','category_name','club_name','image_url'];
 
     public function getNameAttribute()
     {
@@ -19,6 +19,14 @@ class Merchant extends Model
         return $locale == 'ar'
             ? $this->name_ar
             : $this->name_en;
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if ($this->image) {
+            return asset('merchants/' . $this->image);
+        }
+        return null;
     }
 
     public function category()

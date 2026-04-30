@@ -50,7 +50,6 @@ Route::prefix('v-mobile')->group(function () {
 
             Route::get('merchant_cats','MobileApiController@merchant_cats');
 
-            Route::post('add_merchant','MobileApiController@add_merchant');
             Route::get('merchants','MobileApiController@merchants');
             
         });

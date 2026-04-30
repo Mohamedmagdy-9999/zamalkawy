@@ -699,32 +699,31 @@ class MobileApiController extends Controller
 
     }
 
-
-    public function add_merchant(Request $request)
-    {
+    // public function add_merchant(Request $request)
+    // {
         
         
-        $name = null;
-        if ($file = $request->file('image')) {
-            $name = time() . '_' . $file->getClientOriginalName();
-            $file->move(public_path('merchants'), $name);
-        }
+    //     $name = null;
+    //     if ($file = $request->file('image')) {
+    //         $name = time() . '_' . $file->getClientOriginalName();
+    //         $file->move(public_path('merchants'), $name);
+    //     }
 
         
 
-        $blog = new Merchant();
-        $blog->image = $name;
-        $blog->merchant_category_id = $request->merchant_category_id;
-        $blog->name_en = $request->name_en;
-        $blog->name_ar = $request->name_ar;
-        $blog->club_id = 1;
-        $blog->save();
+    //     $blog = new Merchant();
+    //     $blog->image = $name;
+    //     $blog->merchant_category_id = $request->merchant_category_id;
+    //     $blog->name_en = $request->name_en;
+    //     $blog->name_ar = $request->name_ar;
+    //     $blog->club_id = 1;
+    //     $blog->save();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'تم الاضافة بنجاح',
-        ], 200);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'تم الاضافة بنجاح',
+    //     ], 200);
+    // }
 
     public function merchants()
     {
