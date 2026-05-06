@@ -838,9 +838,17 @@ class MobileApiController extends Controller
     //     ], 200);
     // }
 
-    public function merchants()
+    public function merchants(Request $request)
     {
-        $data =  Merchant::latest()->paginate(10);
+        $data = Merchant::query()
+
+            ->when($request->merchant_category_id, function ($q, $merchant_category_id) {
+                $q->where('merchant_category_id', $merchant_category_id);
+            })
+
+            ->latest()
+            ->paginate(10);
+
         $data->getCollection()->transform(function ($item) {
             return [
                 'id'  => $item->id,
@@ -848,7 +856,6 @@ class MobileApiController extends Controller
                 'image_url'=> $item->image_url,
                 'category_name'=> $item->category_name,
                 'club_name'=> $item->club_name,
-               
             ];
         });
 
@@ -856,7 +863,6 @@ class MobileApiController extends Controller
             'status' => true,
             'data' => $data,
         ], 200);
-
     }
 
     //  public function add_deal(Request $request)
