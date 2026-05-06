@@ -281,6 +281,37 @@ class MobileApiController extends Controller
         ]);
     }
 
+    public function check(Request $request)
+    {
+        try {
+            $user = Auth::guard('api_users')->user();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'التوكن غير صالح أو انتهى'
+                ], 401);
+            }
+
+            return response()->json([
+                'status' => true,
+                'user' => $user
+            ]);
+
+        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'التوكن انتهى، الرجاء تسجيل الدخول مرة أخرى'
+            ], 401);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'حدث خطأ',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function delete_user(Request $request)
     {
         $user = Auth::guard('api_users')->user();
