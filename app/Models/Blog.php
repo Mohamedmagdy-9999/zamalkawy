@@ -10,7 +10,7 @@ class Blog extends Model
     use HasFactory;
     protected $guarded = [];
 
-    protected $appends = ['image_url','title','category_name','desc','views_count','is_liked'];
+    protected $appends = ['image_url','title','category_name','desc','views_count','likes_count','is_liked'];
 
     public function getImageUrlAttribute()
     {
@@ -61,6 +61,11 @@ class Blog extends Model
     public function likes()
     {
         return $this->hasMany(BlogLike::class,'blog_id');
+    }
+
+    public function getLikesCountAttribute()
+    {
+        return $this->likes()->count();
     }
 
     public function likedUsers()

@@ -461,6 +461,7 @@ class MobileApiController extends Controller
                         'created_at' => optional($blog->created_at)->format('d-m-Y'),
                         'views_count' => $blog->views_count,
                         'is_liked' => $blog->is_liked,
+                        'likes_count' => $blog->likes_count,
                     ];
                 })
             ];
@@ -504,6 +505,7 @@ class MobileApiController extends Controller
                         'created_at' => optional($blog->created_at)->format('d-m-Y'),
                         'views_count' => $blog->views_count,
                         'is_liked' => $blog->is_liked,
+                        'likes_count' => $blog->likes_count,
                     ];
                 }),
 
@@ -588,6 +590,7 @@ class MobileApiController extends Controller
             'created_at' => optional($blog->created_at)->format('d-m-Y'),
             'views_count' => $blog->views_count,
             'is_liked' => $blog->is_liked,
+            'likes_count' => $blog->likes_count,
         ];
 
         $userId = auth()->guard('api_users')->id();
