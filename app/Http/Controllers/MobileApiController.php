@@ -472,6 +472,56 @@ class MobileApiController extends Controller
         ]);
     }
 
+    public function categoryBlogs($id)
+    {
+        $category = Category::find($id);
+
+        if (!$category) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Category not found'
+            ], 404);
+        }
+
+        $blogs = Blog::where('category_id', $id)
+            ->with('category')
+            ->latest()
+            ->paginate(10);
+
+        $data = [
+            'id' => $category->id,
+            'name' => $category->name,
+
+            'blogs' => [
+                'data' => collect($blogs->items())->map(function ($blog) {
+                    return [
+                        'id'  => $blog->id,
+                        'title'=> $blog->title,
+                        'desc'=> $blog->desc,
+                        'image_url'=> $blog->image_url,
+                        'category_name'=> $blog->category_name,
+                        'category_id'=> $blog->category_id,
+                        'created_at' => optional($blog->created_at)->format('d-m-Y'),
+                        'views_count' => $blog->views_count,
+                        'is_liked' => $blog->is_liked,
+                    ];
+                }),
+
+                'pagination' => [
+                    'current_page' => $blogs->currentPage(),
+                    'last_page' => $blogs->lastPage(),
+                    'per_page' => $blogs->perPage(),
+                    'total' => $blogs->total(),
+                ]
+            ]
+        ];
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ]);
+    }
+
     public function blogs(Request $request)
     {
         $data = Blog::query()

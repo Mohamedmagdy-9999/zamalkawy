@@ -35,6 +35,7 @@ Route::prefix('v-mobile')->group(function () {
             Route::post('delete_user', 'AuthApiController@delete_user');
 
             Route::get('categories','MobileApiController@categories');
+            Route::get('categoryBlogs/{id}','MobileApiController@categoryBlogs');
 
             Route::get('blogs','MobileApiController@blogs');
             Route::get('blog_details/{id}','MobileApiController@blog_details');
