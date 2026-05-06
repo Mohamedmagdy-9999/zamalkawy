@@ -430,15 +430,46 @@ class MobileApiController extends Controller
 
     }
 
+    // public function categories()
+    // {
+    //     $data = Category::latest()->get();
+    //     return response()->json([
+    //             'status' => true,
+    //             'data' => $data,
+              
+    //     ]);
+
+    // }
+
     public function categories()
     {
-        $data = Category::latest()->get();
-        return response()->json([
-                'status' => true,
-                'data' => $data,
-              
-        ]);
+        $data = Category::with('blogs')->latest()->get();
 
+        $data->transform(function ($category) {
+            return [
+                'id' => $category->id,
+                'name' => $category->name,
+
+                'blogs' => $category->blogs->map(function ($blog) {
+                    return [
+                        'id'  => $blog->id,
+                        'title'=> $blog->title,
+                        'desc'=> $blog->desc,
+                        'image_url'=> $blog->image_url,
+                        'category_name'=> $blog->category_name,
+                        'category_id'=> $blog->category_id,
+                        'created_at' => optional($blog->created_at)->format('d-m-Y'),
+                        'views_count' => $blog->views_count,
+                        'is_liked' => $blog->is_liked,
+                    ];
+                })
+            ];
+        });
+
+        return response()->json([
+            'status' => true,
+            'data' => $data,
+        ]);
     }
 
     public function blogs(Request $request)

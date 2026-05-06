@@ -19,4 +19,8 @@ class Category extends Model
             ? $this->name_ar
             : $this->name_en;
     }
+    public function blogs()
+    {
+        return $this->hasMany(Blog::class,'category_id');
+    }
 }
