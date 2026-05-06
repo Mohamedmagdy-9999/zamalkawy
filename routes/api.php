@@ -55,7 +55,7 @@ Route::prefix('v-mobile')->group(function () {
             Route::get('merchants','MobileApiController@merchants');
 
            
-            Route::get('deals','MobileApiController@deals');
+            Route::get('deals/{merchant_id}','MobileApiController@deals');
             
         });
 

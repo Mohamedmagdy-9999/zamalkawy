@@ -892,18 +892,22 @@ class MobileApiController extends Controller
     //      ], 200);
     //  }
 
-     public function deals()
+    public function deals($merchant_id)
     {
-        $data =  Deal::latest()->paginate(10);
+        $data = Deal::where('merchant_id', $merchant_id)
+            ->with('merchant')
+            ->latest()
+            ->paginate(10);
+
         $data->getCollection()->transform(function ($item) {
             return [
                 'id'  => $item->id,
                 'desc'=> $item->desc,
                 'image_url'=> $item->image_url,
                 'merchant_name'=> $item->merchant_name,
+                'merchant_id'=> $item->merchant_id,
                 'price'=> $item->price,
                 'end_date'=> $item->end_date,
-               
             ];
         });
 
@@ -911,7 +915,6 @@ class MobileApiController extends Controller
             'status' => true,
             'data' => $data,
         ], 200);
-
     }
 }
 
