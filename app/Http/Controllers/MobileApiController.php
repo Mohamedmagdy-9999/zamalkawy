@@ -907,6 +907,7 @@ class MobileApiController extends Controller
                 'merchant_name'=> $item->merchant_name,
                 'merchant_id'=> $item->merchant_id,
                 'price'=> $item->price,
+                'current_price' => $item->current_price,
                 'end_date'=> $item->end_date,
             ];
         });
